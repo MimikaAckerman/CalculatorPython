@@ -1,6 +1,4 @@
 from tkinter import *
-import parser
-
 
 
 root = Tk()
@@ -12,26 +10,29 @@ display.grid(row=1, columnspan=8, sticky=W+E)
 
 
 # guardamos el indice en una variable
-indice = 0
+i = 0
 
 
 # obtener numeros
 def get_numbers(n):
-    global indice
-    display.insert(indice, n)
-    indice += 1
+    global i
+    display.insert(i, n)
+    i += 1
 
 # obtener las operaciones
+
+
 def get_operacions(operator):
-    global indice
+    global i
     operator_lenght = len(operator)
-    display.insert(indice, operator)
-    indice += operator_lenght
+    display.insert(i, operator)
+    i += operator_lenght
 
 
 # clear display
 def clear_display():
     display.delete(0, END)
+
 
 def undo():
     display_state = display.get()
@@ -44,18 +45,25 @@ def undo():
         display.insert(0, 'Error')
 
 
-#CALCULATE
+# CALCULATE
 def calculate():
+   global i 
    display_state = display.get()
-   try:
-     math_expression =  parser.expr(display_state).compile()
-     eval(math_expression)
-     clear_display()
-     display.insert(0, result)
-   except expression as identifier:
-       clear_display()
-       display.insert(0,'ERROR')
-        
+   if i !=0:
+       try:
+           result =str(eval(display_state))
+           display.delete(0,END)
+           display .insert(0,result)
+           longuitud = len(result)
+           i = longuitud
+       except:
+           result = 'ERROR'
+           display.delete(0,END)
+           display.insert(0,result)
+           
+   else:
+       pass
+
 
 # NUMERIC BUTTON
 Button(root, text="1", command=lambda: get_numbers(1)).grid(
@@ -96,7 +104,8 @@ Button(root, text="*", command=lambda: get_operacions("*")
 Button(root, text="/", command=lambda: get_operacions("/")
        ).grid(row=5, column=4, sticky=W+E)
 
-Button(root, text="←",command=lambda: undo()).grid(row=2, column=5, sticky=W+E, columnspan=2)
+Button(root, text="←", command=lambda: undo()).grid(
+    row=2, column=5, sticky=W+E, columnspan=2)
 Button(root, text="expo", command=lambda: get_operacions(
     "**")).grid(row=3, column=5, sticky=W+E)
 Button(root, text="^2", command=lambda: get_operacions(
@@ -105,7 +114,8 @@ Button(root, text="(", command=lambda: get_operacions(
     "(")).grid(row=4, column=5, sticky=W+E)
 Button(root, text=")", command=lambda: get_operacions(
     ")")).grid(row=4, column=6, sticky=W+E)
-Button(root, text="=",command=lambda: calculate()).grid(row=5, column=5, sticky=W+E, columnspan=2)
+Button(root, text="=", command=lambda: calculate()).grid(
+    row=5, column=5, sticky=W+E, columnspan=2)
 
 
 root.mainloop()
